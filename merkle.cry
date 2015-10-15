@@ -1,0 +1,25 @@
+import SHA256
+
+s: [256] -> [256]
+s x = sha256 x
+
+// Lamport signatures
+
+generate_public_key :{a} (fin a) => [a]([256],[256]) -> ([256] -> [256]) -> [a]([256],[256])
+generate_public_key sks hash = [(hash xi, hash yi) | (xi, yi) <- sks]
+
+sign_message : {a} (fin a) => [a] -> [a]([256],[256]) -> ([a],[a][256])
+sign_message m sk = (m, signature) where
+  signature =  [ if mi == True then xi else yi | mi <- m | (xi,yi) <- sk ]
+
+verify_signature : {a} (fin a, a >= 1) => ([a],[a][256]) -> [a]([256],[256]) -> ([256]->[256]) -> Bit
+verify_signature signed_m pk hash = verif where
+  (m, sig) = signed_m
+  checks = [ if mi == True then hash si == hxi else hash si == hyi | mi <- m | si <- sig | (hxi, hyi) <- pk]
+  verif = -1 == checks
+
+//verify_correct : [8] -> [8]([256],[256]) -> ([256] -> [256]) -> Bit
+verify_correct : [8] -> [8]([256],[256]) -> Bit
+property verify_correct m sks = verify_signature (sign_message m sks) (generate_public_key sks hash) hash where
+ hash = s
+
