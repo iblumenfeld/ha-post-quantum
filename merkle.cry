@@ -23,3 +23,16 @@ verify_correct : [8] -> [8]([256],[256]) -> Bit
 property verify_correct m sks = verify_signature (sign_message m sks) (generate_public_key sks hash) hash where
  hash = s
 
+//One bit signatures - Should be easier to use with SAW
+generate_public_key_ob : [2][256] -> ([256] -> [256]) -> [2][256]
+generate_public_key_ob sks hash = [hash sk | sk <- sks]
+
+sign_message_ob : Bit -> [2][256] -> [256]
+sign_message_ob m sks = if m then sks@0 else sks@1
+
+verify_signature_ob : Bit -> [256] -> [2][256] -> ([256] -> [256]) -> Bit
+verify_signature_ob m sig pks hash = hash sig == if m then pks@0 else pks@1
+
+verify_correct_ob : Bit -> [2][256] -> ([256] -> [256]) -> Bit
+verify_correct_ob m sks hash = verify_signature_ob m (sign_message_ob m sks) (generate_public_key_ob sks hash) hash
+
