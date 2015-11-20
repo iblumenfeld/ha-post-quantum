@@ -1,0 +1,7 @@
+m <- cryptol_load "merkle.cry";
+let gen = {{ m::generate_public_key_ob }};
+let sign = {{ m::sign_message_ob }};
+let ver = {{ m::verify_signature_ob }};
+let hash = {{ \x -> x:[256] }};
+let thm = {{ \mes sks -> ver mes (sign mes sks) (gen sks hash) hash }};
+prove_print (unint_z3 ["hash"]) thm;
