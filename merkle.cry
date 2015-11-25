@@ -53,6 +53,7 @@ merkle_gen_level ais hash = [hash (ai # aii) | ai <- (evens ais) | aii <- (odds 
 
 // Since current proof technology requires that we concretize the depth of the tree, we will create a helper function that creates a public key for a 4 level digital signature.
 
+merkle_public_key : [8][2][256] -> ([512] -> [256]) -> [256]
 merkle_public_key pks hash = a where
   leaves = merkle_gen_leaves pks hash
   a3 = leaves
