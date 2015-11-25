@@ -61,3 +61,14 @@ merkle_public_key pks hash = a where
   a1 = merkle_gen_level a2 hash
   a0 = merkle_gen_level a1 hash
   a = a0@0
+
+merkle_sign msg sks pks i hash = [msg] # [sk] # [auths] where
+ sk = if msg then (sks@i)@0 else (sks@i)@1
+ auths = zero //change this to the correct thing
+ leaves = merkle_gen_leaves pks hash
+ a3 = leaves
+ a2 = merkle_gen_level a3 hash
+ a1 = merkle_gen_level a2 hash
+ a0 = merkle_gen_level a1 hash
+//Could do this witha big case split, but that seems dumb.
+ 
