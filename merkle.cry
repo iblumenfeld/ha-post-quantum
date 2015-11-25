@@ -36,3 +36,27 @@ verify_signature_ob m sig pks hash = (hash sig) == (if m then pks@0 else pks@1)
 verify_correct_ob : Bit -> [2][256] -> ([256] -> [256]) -> Bit
 verify_correct_ob m sks hash = verify_signature_ob m (sign_message_ob m sks) (generate_public_key_ob sks hash) hash
 
+//Now we actually construct the Merkle Tree.  For ease we choose a case with 8 leaves.
+
+evens : {a, b, c} (a == 2*c) => [a][b] -> [c][b]
+evens xs = [ x@0 | x <- (groupBy `{2} xs) ]
+
+odds : {a, b, c} (a == 2*c) => [a][b] -> [c][b]
+odds xs = [ x@1 | x <- (groupBy `{2} xs) ]
+
+merkle_gen_leaves : [8][2][256] -> ([512] -> [256]) -> [8][256]
+merkle_gen_leaves pks hash = [hash (join pk) | pk <- pks]
+
+//merkle_gen_next_level ais = [hash (ai # aii) | 
+merkle_gen_level : {a} (fin a) => [2 * a][256] -> ([512] -> [256]) -> [a][256]
+merkle_gen_level ais hash = [hash (ai # aii) | ai <- (evens ais) | aii <- (odds ais)] 
+
+// Since current proof technology requires that we concretize the depth of the tree, we will create a helper function that creates a public key for a 4 level digital signature.
+
+merkle_public_key pks hash = a where
+  leaves = merkle_gen_leaves pks hash
+  a3 = leaves
+  a2 = merkle_gen_level a3 hash
+  a1 = merkle_gen_level a2 hash
+  a0 = merkle_gen_level a1 hash
+  a = a0@0
