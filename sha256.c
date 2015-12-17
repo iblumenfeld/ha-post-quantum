@@ -7,7 +7,7 @@ uint32_t rotr(uint32_t x, uint32_t n){
   return (x >> n) | (top << (32 - n)); 
 }
 
-uint32_t ch(uint32_t x, uint32_t y, uint32t_t z){
+uint32_t ch(uint32_t x, uint32_t y, uint32_t z){
   return (x & y) ^ ((~x) & z);
 }
 
@@ -42,14 +42,15 @@ static const uint32_t Ks[64] = {
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
 void shaRound(uint32_t *output, uint32_t *H, uint32_t *W){
-  a = H[0];
-  b = H[1];
-  c = H[2];
-  d = H[3];
-  e = H[4];
-  f = H[5];
-  g = H[6];
-  h = H[7];
+  uint32_t a = H[0];
+  uint32_t b = H[1];
+  uint32_t c = H[2];
+  uint32_t d = H[3];
+  uint32_t e = H[4];
+  uint32_t f = H[5];
+  uint32_t g = H[6];
+  uint32_t h = H[7];
+  uint32_t T1, T2;
   for(int i = 0; i < 64; i++){
     T1 = h + S1(e) + ch(e,f,g) + Ks[i] + W[i];
     T2 = S0(a) + maj(a,b,c);
