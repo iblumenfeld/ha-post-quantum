@@ -1,0 +1,14 @@
+// The SHA256 Hash round computation and how overall loop is defined in 6.2.2
+hash_round : [8][32] -> [64][32] -> [8][32]
+hash_round H W = H' where
+  T1 = [hi + (S1 ei) + (ch ei fi gi) + ki + wi | hi <- h | ei <- e | fi <- f | gi <- g | ki <- Ks | wi <- W] : [64][32]
+  T2 = [(S0 ai) + (maj ai bi ci) | ai <- a | bi <- b | ci <- c ] 
+  a = [H@0] # [ti + tj | ti <- T1 | tj <-T2] 
+  b = [H@1] # a
+  c = [H@2] # b
+  d = [H@3] # c
+  e = [H@4] # [di + ti | di <- d | ti <- T1]
+  f = [H@5] # e
+  g = [H@6] # f
+  h = [H@7] # g
+  H' = H + [a@64, b@64, c@64, d@64, e@64, f@64, g@64, h@64]
