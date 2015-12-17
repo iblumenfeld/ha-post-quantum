@@ -1,0 +1,10 @@
+import "SHA256-block.cry";
+m <- llvm_load_module "sha256.bc";
+hs <- fresh_symbolic "hs" {| [8][32] |};
+ws <- fresh_symbolic "ws" {| [64][32] |};
+let allocs = [ ("H", 8), ("W", 64)];
+let inputs = [ ("*H", hs, 8), ("*W", ws, 64)];
+let outputs = [ ("*H", 8) ];
+t <- llvm_symexec m "shaRound" allocs inputs outputs true;
+thm <- abstract_symbolic {{ t == hash_round hs ws}};
+prove_print abc thm;

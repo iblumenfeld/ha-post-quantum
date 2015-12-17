@@ -41,7 +41,7 @@ static const uint32_t Ks[64] = {
   0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-void shaRound(uint32_t *output, uint32_t *H, uint32_t *W){
+void shaRound(uint32_t *H, uint32_t *W){
   uint32_t a = H[0];
   uint32_t b = H[1];
   uint32_t c = H[2];
@@ -63,13 +63,13 @@ void shaRound(uint32_t *output, uint32_t *H, uint32_t *W){
     b = a;
     a = T1 + T2;
   }
-  output[0] = H[0] + a;
-  output[1] = H[1] + b;
-  output[2] = H[2] + c;
-  output[3] = H[3] + d;
-  output[4] = H[4] + e;
-  output[5] = H[5] + f;
-  output[6] = H[6] + g;
-  output[7] = H[7] + h;
+  H[0] = H[0] + a;
+  H[1] = H[1] + b;
+  H[2] = H[2] + c;
+  H[3] = H[3] + d;
+  H[4] = H[4] + e;
+  H[5] = H[5] + f;
+  H[6] = H[6] + g;
+  H[7] = H[7] + h;
   return;
 }
