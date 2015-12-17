@@ -41,9 +41,34 @@ static const uint32_t Ks[64] = {
   0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-uint32_t num_pad_bits(uint64_t msglen){
-  uint64_t content_len = msglen + 65;
-  return (uint32_t) ((512 - content_len % 512) % 512);
+void shaRound(uint32_t *output, uint32_t *H, uint32_t *W){
+  a = H[0];
+  b = H[1];
+  c = H[2];
+  d = H[3];
+  e = H[4];
+  f = H[5];
+  g = H[6];
+  h = H[7];
+  for(int i = 0; i < 64; i++){
+    T1 = h + S1(e) + ch(e,f,g) + Ks[i] + W[i];
+    T2 = S0(a) + maj(a,b,c);
+    h = g;
+    g = f;
+    f = e;
+    e = d + T1;
+    d = c;
+    c = b;
+    b = a;
+    a = T1 + T2;
+  }
+  output[0] = H[0] + a;
+  output[1] = H[1] + b;
+  output[2] = H[2] + c;
+  output[3] = H[3] + d;
+  output[4] = H[4] + e;
+  output[5] = H[5] + f;
+  output[6] = H[6] + g;
+  output[7] = H[7] + h;
+  return;
 }
-
-
